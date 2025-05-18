@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Verwarnungen – Adminbereich</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #111; color: #eee; padding: 2em; }
+    h1 { color: #fff; }
+    .warn-list { background: #1a1a1a; padding: 1em; border-radius: 8px; margin-top: 1em; }
+    label, input, button { display: block; margin: 0.5em 0; }
+    input, button { padding: 0.5em; width: 100%; }
+    button { background: #0066ff; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #0044aa; }
+  </style>
+</head>
+<body>
+  <h1>⚠️ Verwarnungen verwalten</h1>
+  <form id="warnForm">
+    <label for="userId">Discord User ID:</label>
+    <input type="text" id="userId" name="userId" required>
+    <button type="submit">Verwarnungen anzeigen</button>
+  </form>
+  <div id="result" class="warn-list"></div>
+
+  <script>
+    const form = document.getElementById('warnForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userId = document.getElementById('userId').value;
+      const res = await fetch('/api/warnungen/' + userId);
+      const data = await res.json();
+      const out = document.getElementById('result');
+      if (!data.length) {
+        out.innerHTML = '<p>✅ Keine Verwarnungen gefunden.</p>';
+      } else {
+        out.innerHTML = '<ul>' + data.map(w => `<li>${w.grund} (${w.zeit})</li>`).join('') + '</ul>';
+      }
+    });
+  </script>
+</body>
+</html>
